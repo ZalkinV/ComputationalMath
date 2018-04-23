@@ -110,6 +110,7 @@ def GetCalcPrecision(error):
 		precisionCalc /= 10
 	return digitNumber
 
+
 def Main():
 	precision = 100
 	error = 0.05
@@ -120,6 +121,8 @@ def Main():
 	rootTan = MethodTangent(bounds[0] + 0.01, error, 1)
 	rootSec = MethodSecant(bounds[0] + 0.01, bounds[0] + 1.5, error, 1)
 	
+	plt.plot(rootTan, Function(rootTan), 'or')
+	plt.plot(rootSec, Function(rootSec), 'og')
 	plt.show()
 
 	print("Метод Ньютона(касательных): ", round(rootTan, GetCalcPrecision(error)))
