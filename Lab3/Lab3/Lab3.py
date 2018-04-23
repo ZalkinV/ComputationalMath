@@ -57,8 +57,9 @@ def DrawMainGraph(begin, end, figure, precision = 100):
 	pass
 
 def DrawSecantLine(x0, x1, figure = -1):
+	#TODO: Надо добавить проверку деления на ноль. Можно в этом случае просто сдвигать точки и сообщать (или нет) об этом пользователю
 	x2 = x1 - Function(x1) / ApproxDerivative(x0, x1)
-	
+
 	if (figure != -1):
 		plt.figure(figure)
 		plt.plot([x0, x0], [Function(x0), 0], 'g--', linewidth=helpLineWidth)
@@ -82,8 +83,9 @@ def MethodSecant(x0, x1, error, figure = -1):
 	return xCurrent
 
 def DrawTangentLine(x0, figure = -1):
-
+		#TODO: Надо добавить проверку деления на ноль. Можно в этом случае просто сдвигать точки и сообщать (или нет) об этом пользователю
 	x1 = x0 - Function(x0) / Derivative(x0)
+
 	if (figure != -1):
 		plt.figure(figure)
 		plt.plot([x0, x0], [Function(x0), 0], 'r--', linewidth=helpLineWidth)
