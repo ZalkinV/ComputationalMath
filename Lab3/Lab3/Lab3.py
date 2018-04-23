@@ -6,16 +6,15 @@ helpLineWidth = 0.9
 def Function(x):
 	#return np.cos(x) - 6 * x + 1
 	#return 2 * np.log(x + 1) - 1/x
-	return (x - 1)**3 + 0.5 * np.e**x
+	return (x - 1) ** 3 + 0.5 * np.e ** x
 	#return np.sqrt(x) - 1/(x + 1)**2
 	#return 3**x + x
 	#return x**2 + 4 * np.sin(x)
 	#return x * np.log(x**2 - 1) - 1
-
 def Derivative(x):
 	#return -np.sin(x) - 6
 	#
-	return 3 * (x - 1)**2 + 0.5 * np.e**x 
+	return 3 * (x - 1) ** 2 + 0.5 * np.e ** x 
 
 def ApproxDerivative(x0, x1):
 	return (Function(x1) - Function(x0)) / (x1 - x0)
@@ -39,7 +38,7 @@ def GetInputData():
 		break
 	return (begin, end)
 
-def DrawMainGraph(begin, end, figure, precision=100):
+def DrawMainGraph(begin, end, figure, precision = 100):
 	plt.figure(figure)
 	
 	xList = np.linspace(begin, end, 100)
@@ -57,33 +56,48 @@ def DrawMainGraph(begin, end, figure, precision=100):
 	plt.axis((xList[0], xList[-1], yMin, yMax))
 	pass
 
-def DrawSecantLine(x0, x1, figure=1):
-	plt.figure(figure)
-
-	x2 = x1 - Function(x1)/ApproxDerivative(x0, x1)
-	plt.plot([x0, x0], [Function(x0), 0], 'r--', linewidth=helpLineWidth)
-	plt.plot([x1, x1], [Function(x1), 0], 'r--', linewidth=helpLineWidth)
-	plt.plot([x0, x1, x2], [Function(x0), Function(x1), 0], 'r-', linewidth=helpLineWidth)
+def DrawSecantLine(x0, x1, figure = -1):
+	x2 = x1 - Function(x1) / ApproxDerivative(x0, x1)
+	
+	if (figure != -1):
+		plt.figure(figure)
+		plt.plot([x0, x0], [Function(x0), 0], 'g--', linewidth=helpLineWidth)
+		plt.plot([x1, x1], [Function(x1), 0], 'g--', linewidth=helpLineWidth)
+		plt.plot([x0, x1, x2], [Function(x0), Function(x1), 0], 'g-', linewidth=helpLineWidth)
 
 	return x2
 
+def MethodSecant(x0, x1, error, figure = -1):
+	xPrevious = x0
+	xCurrent = x1
+	yNext = Function(x1)
+	i = 0
 
-def DrawTangentLine(x0, figure=1):
-	plt.figure(figure)
+	while (abs(yNext) > error and i < 100):
+		xNext = DrawSecantLine(xPrevious, xCurrent, figure)
+		yNext = Function(xNext)
+		xPrevious = xCurrent
+		xCurrent = xNext
+		i += 1
+	return xCurrent
 
-	x1 = x0 - Function(x0)/Derivative(x0)
-	plt.plot([x0, x0], [Function(x0), 0], 'r--', linewidth=helpLineWidth)
-	plt.plot([x0, x1], [Function(x0), 0], 'r-', linewidth=helpLineWidth)
+def DrawTangentLine(x0, figure = -1):
+
+	x1 = x0 - Function(x0) / Derivative(x0)
+	if (figure != -1):
+		plt.figure(figure)
+		plt.plot([x0, x0], [Function(x0), 0], 'r--', linewidth=helpLineWidth)
+		plt.plot([x0, x1], [Function(x0), 0], 'r-', linewidth=helpLineWidth)
 
 	return x1
 
-def MethodTangent(x0, error):
+def MethodTangent(x0, error, figure = -1):
 	xCurrent = x0 #Чтобы не было ошибки, если цикл ни разу не запуститься
 	yCurrent = Function(x0)
 	i = 0
 	
 	while (abs(yCurrent) > error and i < 100):
-		xCurrent = DrawTangentLine(xCurrent)
+		xCurrent = DrawTangentLine(xCurrent, figure)
 		yCurrent = Function(xCurrent)
 		i += 1
 	return xCurrent
@@ -103,11 +117,13 @@ def Main():
 	print("Поиск корней на промежутке [{a}; {b}] ...".format(a=bounds[0], b=bounds[1]))
 	
 	DrawMainGraph(bounds[0], bounds[1], 1, precision)
-	rootTan = MethodTangent(bounds[0]+0.01, error)
-	#rootSecant = DrawSecantLine(1, bounds[0] + 0.01, bounds[0] + 1.5)
+	rootTan = MethodTangent(bounds[0] + 0.01, error, 1)
+	rootSec = MethodSecant(bounds[0] + 0.01, bounds[0] + 1.5, error, 1)
+	
 	plt.show()
 
-	print("Метод Ньютона: ", round(rootTan, GetCalcPrecision(error)))
+	print("Метод Ньютона(касательных): ", round(rootTan, GetCalcPrecision(error)))
+	print("Метод Секущих: ", round(rootSec, GetCalcPrecision(error)))
 	pass
 
 Main()
