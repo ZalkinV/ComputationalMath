@@ -57,16 +57,7 @@ def DrawMainGraph(begin, end, figure, precision=100):
 	plt.axis((xList[0], xList[-1], yMin, yMax))
 	pass
 
-def DrawTangentLine(figure, x0):
-	plt.figure(figure)
-
-	x1 = x0 - Function(x0)/Derivative(x0)
-	plt.plot([x0, x0], [Function(x0), 0], 'r--', linewidth=helpLineWidth)
-	plt.plot([x0, x1], [Function(x0), 0], 'r-', linewidth=helpLineWidth)
-
-	return x1
-
-def DrawSecantLine(figure, x0, x1):
+def DrawSecantLine(x0, x1, figure=1):
 	plt.figure(figure)
 
 	x2 = x1 - Function(x1)/ApproxDerivative(x0, x1)
@@ -76,14 +67,34 @@ def DrawSecantLine(figure, x0, x1):
 
 	return x2
 
+
+def DrawTangentLine(x0, figure=1):
+	plt.figure(figure)
+
+	x1 = x0 - Function(x0)/Derivative(x0)
+	plt.plot([x0, x0], [Function(x0), 0], 'r--', linewidth=helpLineWidth)
+	plt.plot([x0, x1], [Function(x0), 0], 'r-', linewidth=helpLineWidth)
+
+	return x1
+
+def MethodTangent(x0, error):
+	xCurrent = x0 #Чтобы не было ошибки, если цикл ни разу не запуститься
+	yCurrent = Function(x0)
+
+	while (abs(yCurrent) > error):
+		xCurrent = DrawTangentLine(xCurrent)
+		yCurrent = Function(xCurrent)
+	return xCurrent
+
 def Main():
 	precision = 100
+	error = 0.5
 	bounds = GetInputData()
 	print("Поиск корней на промежутке [{a}; {b}] ...".format(a=bounds[0], b=bounds[1]))
 	
 	DrawMainGraph(bounds[0], bounds[1], 1, precision)
-	DrawTangentLine(1, bounds[0]+0.01)
-	DrawSecantLine(1, bounds[0] + 0.01, bounds[0] + 1.5)
+	rootTan = MethodTangent(bounds[0]+0.01, error)
+	#rootSecant = DrawSecantLine(1, bounds[0] + 0.01, bounds[0] + 1.5)
 	plt.show()
 
 Main()
