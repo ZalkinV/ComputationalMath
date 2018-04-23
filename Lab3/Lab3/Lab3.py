@@ -28,14 +28,14 @@ def GetInputData():
 				begin = float(bounds[0])
 				end = float(bounds[1])
 			except (ValueError):
-				print("Нужно вводить действительные числа! Попробуйте ещё раз.")
+				print("Нужно вводить действительные числа! Попробуйте ещё раз.\n")
 				continue
 		elif (bounds[0] == ''):
 			begin = -2
 			end = 2
 		else:
-			print("Промежуток должен быть задан двумя действительными числами")
-			
+			print("Промежуток должен быть задан двумя действительными числами!\n")
+			continue
 		break
 	return (begin, end)
 
@@ -80,15 +80,25 @@ def DrawTangentLine(x0, figure=1):
 def MethodTangent(x0, error):
 	xCurrent = x0 #Чтобы не было ошибки, если цикл ни разу не запуститься
 	yCurrent = Function(x0)
-
-	while (abs(yCurrent) > error):
+	i = 0
+	
+	while (abs(yCurrent) > error and i < 100):
 		xCurrent = DrawTangentLine(xCurrent)
 		yCurrent = Function(xCurrent)
+		i += 1
 	return xCurrent
+
+def GetCalcPrecision(error):
+	precisionCalc = 100
+	digitNumber = -2
+	while (error % precisionCalc >= error):
+		digitNumber += 1
+		precisionCalc /= 10
+	return digitNumber
 
 def Main():
 	precision = 100
-	error = 0.5
+	error = 0.05
 	bounds = GetInputData()
 	print("Поиск корней на промежутке [{a}; {b}] ...".format(a=bounds[0], b=bounds[1]))
 	
@@ -96,5 +106,8 @@ def Main():
 	rootTan = MethodTangent(bounds[0]+0.01, error)
 	#rootSecant = DrawSecantLine(1, bounds[0] + 0.01, bounds[0] + 1.5)
 	plt.show()
+
+	print("Метод Ньютона: ", round(rootTan, GetCalcPrecision(error)))
+	pass
 
 Main()
