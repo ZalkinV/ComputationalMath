@@ -134,6 +134,17 @@ def MethodBisection(a, b, error):
 			i += 1
 		return (a + b) / 2
 
+def MethodBruteForce(a, b, n, error):
+	xList = np.linspace(a, b, n)
+	yList = Function(xList)
+	roots = []
+
+	for i in range(n - 1):
+		if yList[i]*yList[i + 1] < 0:
+			root = (float) (xList[i] - (xList[i+1] - xList[i]) / (yList[i + 1] - yList[i]) * yList[i])
+			roots.append(round(root, GetCalcPrecision(error)))
+	return roots
+
 def GetCalcPrecision(error):
 	precisionCalc = 1
 	digitalNumber = 0
@@ -157,15 +168,19 @@ def Main():
 	rootTan = MethodTangent(bounds[0] + 0.01, error, 1)
 	rootSec = MethodSecant(bounds[0] + 0.01, bounds[0] + 1.5, error, 1)
 	rootBis = MethodBisection(bounds[0], bounds[1], error)
+	rootsBruteForce = MethodBruteForce(bounds[0], bounds[1], precision * 100, error)
 	
 	plt.plot(rootTan, Function(rootTan), 'or')
 	plt.plot(rootSec, Function(rootSec), 'og')
+	plt.plot(rootBis, Function(rootBis), 'vm')
+	plt.plot(rootsBruteForce, [Function(x) for x in rootsBruteForce], '^c')
 	plt.show()
 
 	print("Метод Ньютона(касательных): x =", round(rootTan, GetCalcPrecision(error)))
 	print("Метод Секущих: x =", round(rootSec, GetCalcPrecision(error)))
 	if (rootBis):
 		print("Метод Бисекции: x =", round(rootBis, GetCalcPrecision(error)))
+	print("Метод грубой силы: х =", rootsBruteForce, sep=' ')
 	pass
 
 Main()
