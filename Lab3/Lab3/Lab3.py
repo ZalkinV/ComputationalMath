@@ -123,6 +123,17 @@ def MethodTangent(x0, error, figure = -1):
 
 	return xCurrent
 
+def MethodBisection(a, b, error):
+	if (Function(a) * Function(b) > 0):
+		print ("Значения функции на концах отрезка одного знака. Биссекция невозможна.")
+	else:
+		i = 0
+		while (abs(Function((a + b) / 2)) > error and i < maxMethodIterations):
+			x = (a + b) / 2
+			a, b = (a, x) if Function(a) * Function(x) < 0 else (x, b)
+			i += 1
+		return (a + b) / 2
+
 def GetCalcPrecision(error):
 	precisionCalc = 1
 	digitalNumber = 0
@@ -145,6 +156,7 @@ def Main():
 	DrawMainGraph(bounds[0], bounds[1], 1, precision)
 	rootTan = MethodTangent(bounds[0] + 0.01, error, 1)
 	rootSec = MethodSecant(bounds[0] + 0.01, bounds[0] + 1.5, error, 1)
+	rootBis = MethodBisection(bounds[0], bounds[1], error)
 	
 	plt.plot(rootTan, Function(rootTan), 'or')
 	plt.plot(rootSec, Function(rootSec), 'og')
@@ -152,6 +164,8 @@ def Main():
 
 	print("Метод Ньютона(касательных): x =", round(rootTan, GetCalcPrecision(error)))
 	print("Метод Секущих: x =", round(rootSec, GetCalcPrecision(error)))
+	if (rootBis):
+		print("Метод Бисекции: x =", round(rootBis, GetCalcPrecision(error)))
 	pass
 
 Main()
