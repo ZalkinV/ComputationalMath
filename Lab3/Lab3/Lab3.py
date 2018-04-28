@@ -7,15 +7,22 @@ maxMethodIterations = 15
 def Function(x):
 	#return np.cos(x) - 6 * x + 1
 	#return 2 * np.log(x + 1) - 1/x
-	return (x - 1) ** 3 + 0.5 * np.e ** x
+	#return (x - 1) ** 3 + 0.5 * np.e ** x
 	#return np.sqrt(x) - 1/(x + 1)**2
 	#return 3**x + x
 	#return x**2 + 4 * np.sin(x)
 	#return x * np.log(x**2 - 1) - 1
+	return np.exp(-x**2) * np.cos(4*x)
+
 def Derivative(x):
 	#return -np.sin(x) - 6
 	#
-	return 3 * (x - 1) ** 2 + 0.5 * np.e ** x 
+	#return 3 * (x - 1) ** 2 + 0.5 * np.e ** x
+	#
+	#
+	#
+	#
+	return (np.exp(-x**2) * -2 * x) * (-np.sin(4 * x) * 4)
 
 def ApproxDerivative(x0, x1):
 	return (Function(x1) - Function(x0)) / (x1 - x0)
@@ -52,14 +59,10 @@ def DrawMainGraph(begin, end, figure, precision = 100):
 	plt.title("f(x) = cos(x) - 6*x + 1", fontsize=14)
 	plt.grid(True)
 
-	yMin = min(Function(xList[0]), Function(xList[-1]))
-	yMax = max(Function(xList[0]), Function(xList[-1]))
-	plt.axis((xList[0], xList[-1], yMin, yMax))
+	plt.axis((xList[0], xList[-1], min(yList), max(yList)))
 	pass
 
 def DrawSecantLine(x0, x1, figure = -1):
-	#TODO: Надо добавить проверку деления на ноль.  Можно в этом случае просто
-	#сдвигать точки и сообщать (или нет) об этом пользователю
 	try:
 		x2 = x1 - Function(x1) / ApproxDerivative(x0, x1)
 	
@@ -93,8 +96,6 @@ def MethodSecant(x0, x1, error, figure = -1):
 	return xCurrent
 
 def DrawTangentLine(x0, figure = -1):
-	#TODO: Надо добавить проверку деления на ноль.  Можно в этом случае просто
-	#сдвигать точки и сообщать (или нет) об этом пользователю
 	try:
 		x1 = x0 - Function(x0) / Derivative(x0)
 		
@@ -166,7 +167,7 @@ def GetCalcPrecision(error):
 
 def Main():
 	precision = 100
-	error = 0.0001
+	error = 0.001
 	bounds = GetInputData()
 	print("Поиск корней на промежутке [{a}; {b}] ...".format(a=bounds[0], b=bounds[1]))
 	
@@ -192,7 +193,7 @@ def Main():
 	except RuntimeError:
 		print("Значения функции на концах отрезка одного знака. Биссекция невозможна.")
 
-	print("Метод Грубой силы")
+	print("Метод Грубой силы:")
 	rootsBF = MethodBruteForce(bounds[0], bounds[1], error)
 	plt.plot(rootsBF, [Function(x) for x in rootsBF], '^c', label = "Метод грубой силы")
 	PrintResult(rootsBF, error)
