@@ -5,24 +5,24 @@ helpLineWidth = 0.9
 maxMethodIterations = 15
 
 def Function(x):
-	#return np.cos(x) - 6 * x + 1
+	return np.cos(x) - 6 * x + 1
 	#return 2 * np.log(x + 1) - 1/x
 	#return (x - 1) ** 3 + 0.5 * np.e ** x
 	#return np.sqrt(x) - 1/(x + 1)**2
 	#return 3**x + x
 	#return x**2 + 4 * np.sin(x)
 	#return x * np.log(x**2 - 1) - 1
-	return np.exp(-x ** 2) * np.cos(4 * x)
+	#return np.exp(-x ** 2) * np.cos(4 * x)
 
 def Derivative(x):
-	#return -np.sin(x) - 6
+	return -np.sin(x) - 6
 	#
 	#return 3 * (x - 1) ** 2 + 0.5 * np.e ** x
 	#
 	#
 	#
 	#
-	return (np.exp(-x ** 2) * -2 * x * np.cos(4 * x)) + (np.exp(-x ** 2) * -np.sin(4 * x) * 4)
+	#return (np.exp(-x ** 2) * -2 * x * np.cos(4 * x)) + (np.exp(-x ** 2) * -np.sin(4 * x) * 4)
 
 def ApproxDerivative(x0, x1):
 	return (Function(x1) - Function(x0)) / (x1 - x0)
@@ -136,7 +136,7 @@ def MethodBisection(a, b, error):
 	return (a + b) / 2
 
 def MethodBruteForce(a, b, error):
-	n = int((b - a) / error)
+	n = int((b - a) / error) * 10 #Надо придумать, как вычислять n, зная погрешность для y - error
 	xList = np.linspace(a, b, n + 1)
 	roots = []
 
