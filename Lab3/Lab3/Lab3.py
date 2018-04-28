@@ -151,7 +151,7 @@ def PrintResult(x, error):
 		for currentRoot in x:
 			print("\tx = {root} +- {approx}".format(root=round(currentRoot, GetCalcPrecision(error)), approx=error))
 	else:
-		print("\tx = {root} +- {approx}\n".format(root=round(x, GetCalcPrecision(error)), approx=error))
+		print("\tx = {root} +- {approx}".format(root=round(x, GetCalcPrecision(error)), approx=error))
 	pass
 
 def GetCalcPrecision(error):
@@ -166,7 +166,7 @@ def GetCalcPrecision(error):
 
 def Main():
 	precision = 100
-	error = 0.001
+	error = 0.01
 	bounds = GetInputData()
 	print("Поиск корней на промежутке [{a}; {b}] ...".format(a=bounds[0], b=bounds[1]))
 	
@@ -174,25 +174,28 @@ def Main():
 	
 	print("\nРезультаты вычислений:")
 
-	print("Метод Касательных (Ньютона)")
-	rootTan = MethodTangent(bounds[0] + 0.01, error, 1)
+	print("\nМетод Касательных (Ньютона)")
+	rootTan = MethodTangent(bounds[0] + 0.1, error, 1)
 	plt.plot(rootTan, Function(rootTan), 'or', label = "Метод касательных")
-	PrintResult(rootTan, error)
+	if (bounds[0] < rootTan and rootTan < bounds[1]):
+		PrintResult(rootTan, error)
+	else:
+		print("Не получилось найти корни на введённом интервале.\n")
 	
-	print("Метод Секущих:")
-	rootSec = MethodSecant(bounds[0] + 0.01, bounds[0] + 1.5, error, 1)
+	print("\nМетод Секущих:")
+	rootSec = MethodSecant(bounds[0] + 0.1, bounds[0] + 0.3, error, 1)
 	plt.plot(rootSec, Function(rootSec), 'og', label = "Метод секущих")
 	PrintResult(rootSec, error)
 	
 	try:
-		print("Метод Биссекции:")
+		print("\nМетод Биссекции:")
 		rootBis = MethodBisection(bounds[0], bounds[1], error)
 		plt.plot(rootBis, Function(rootBis), 'vm', label = "Метод бисекции")
 		PrintResult(rootBis, error)
 	except RuntimeError:
 		print("Значения функции на концах отрезка одного знака. Биссекция невозможна.")
 
-	print("Метод Грубой силы:")
+	print("\nМетод Грубой силы:")
 	rootsBF = MethodBruteForce(bounds[0], bounds[1], error)
 	plt.plot(rootsBF, [Function(x) for x in rootsBF], '^c', label = "Метод грубой силы")
 	PrintResult(rootsBF, error)
