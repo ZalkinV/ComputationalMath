@@ -125,15 +125,14 @@ def MethodTangent(x0, error, figure = -1):
 
 def MethodBisection(a, b, error):
 	if (Function(a) * Function(b) > 0):
-		print("Значения функции на концах отрезка одного знака. Биссекция невозможна.")
 		raise RuntimeError
-	else:
-		i = 0
-		while (abs(Function((a + b) / 2)) > error and i < maxMethodIterations):
-			x = (a + b) / 2
-			a, b = (a, x) if Function(a) * Function(x) < 0 else (x, b)
-			i += 1
-		return (a + b) / 2
+
+	i = 0
+	while (abs(Function((a + b) / 2)) > error and i < maxMethodIterations):
+		x = (a + b) / 2
+		a, b = (a, x) if Function(a) * Function(x) < 0 else (x, b)
+		i += 1
+	return (a + b) / 2
 
 def MethodBruteForce(a, b, n, error):
 	xList = np.linspace(a, b, n)
@@ -143,57 +142,62 @@ def MethodBruteForce(a, b, n, error):
 	for i in range(n - 1):
 		if (yList[i] * yList[i + 1] < 0):
 			roots.append(xList[i] - ApproxDerivative(xList[i], xList[i + 1]) * yList[i])
+
 	return roots
 
-def PrintResult(methodName, x, error):
-	print("Метод {name}:".format(name=methodName))
+def PrintResult(x, error):
 	if (isinstance(x, list)):
 		for currentRoot in x:
 			print("\tx = {root} +- {approx}".format(root=round(currentRoot, GetCalcPrecision(error)), approx=error))
 	else:
-		print("\tx = {root} +- {approx}".format(root=round(x, GetCalcPrecision(error)), approx=error))
+		print("\tx = {root} +- {approx}\n".format(root=round(x, GetCalcPrecision(error)), approx=error))
 	pass
 
 def GetCalcPrecision(error):
 	precisionCalc = 1
 	digitalNumber = 0
-	try:
-		while (error % precisionCalc >= error):
-			digitalNumber += 1
-			precisionCalc /= 10
-	except ZeroDivisionError:
-		pass
+
+	while (error % precisionCalc >= error and digitalNumber < 15):
+		digitalNumber += 1
+		precisionCalc /= 10
 
 	return digitalNumber
 
 def Main():
 	precision = 100
-	error = 0.001
+	error = 0
 	bounds = GetInputData()
 	print("Поиск корней на промежутке [{a}; {b}] ...".format(a=bounds[0], b=bounds[1]))
 	
 	DrawMainGraph(bounds[0], bounds[1], 1, precision)
 	
+	print("\nРезультаты вычислений:")
+
+	print("Метод Касательных (Ньютона)")
 	rootTan = MethodTangent(bounds[0] + 0.01, error, 1)
 	plt.plot(rootTan, Function(rootTan), 'or', label = "Метод касательных")
+	PrintResult(rootTan, error)
 	
+	print("Метод Секущих:")
 	rootSec = MethodSecant(bounds[0] + 0.01, bounds[0] + 1.5, error, 1)
 	plt.plot(rootSec, Function(rootSec), 'og', label = "Метод секущих")
+	PrintResult(rootSec, error)
+	
+	try:
+		print("Метод Биссекции:")
+		rootBis = MethodBisection(bounds[0], bounds[1], error)
+		plt.plot(rootBis, Function(rootBis), 'vm', label = "Метод бисекции")
+		PrintResult(rootBis, error)
+	except RuntimeError:
+		print("Значения функции на концах отрезка одного знака. Биссекция невозможна.")
 
-	rootBis = MethodBisection(bounds[0], bounds[1], error)
-	plt.plot(rootBis, Function(rootBis), 'vm', label = "Метод бисекции")
-
+	print("Метод Грубой силы")
 	rootsBF = MethodBruteForce(bounds[0], bounds[1], precision * 100, error)
 	plt.plot(rootsBF, [Function(x) for x in rootsBF], '^c', label = "Метод грубой силы")
+	PrintResult(rootsBF, error)
 	
 	plt.legend(loc='best')
 	plt.show()
-
-	print("\nРезультаты вычислений:")
-	PrintResult("Касательных (Ньютона)", rootTan, error)
-	PrintResult("Секущих", rootSec, error)
-	PrintResult("Бисекции", rootBis, error)
-	PrintResult("Грубой силы", rootsBF, error)
 
 	pass
 
