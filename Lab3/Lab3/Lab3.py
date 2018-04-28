@@ -134,9 +134,8 @@ def MethodBisection(a, b, error):
 		i += 1
 	return (a + b) / 2
 
-def MethodBruteForce(a, b, error):
-	n = int((b - a) / error)
-	xList = np.linspace(a, b, n + 1)
+def MethodBruteForce(a, b, n, error):
+	xList = np.linspace(a, b, n)
 	yList = Function(xList)
 	roots = []
 
@@ -166,7 +165,7 @@ def GetCalcPrecision(error):
 
 def Main():
 	precision = 100
-	error = 0.0001
+	error = 0
 	bounds = GetInputData()
 	print("Поиск корней на промежутке [{a}; {b}] ...".format(a=bounds[0], b=bounds[1]))
 	
@@ -193,7 +192,7 @@ def Main():
 		print("Значения функции на концах отрезка одного знака. Биссекция невозможна.")
 
 	print("Метод Грубой силы")
-	rootsBF = MethodBruteForce(bounds[0], bounds[1], error)
+	rootsBF = MethodBruteForce(bounds[0], bounds[1], precision * 100, error)
 	plt.plot(rootsBF, [Function(x) for x in rootsBF], '^c', label = "Метод грубой силы")
 	PrintResult(rootsBF, error)
 	
