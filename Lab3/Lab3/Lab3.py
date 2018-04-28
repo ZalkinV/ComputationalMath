@@ -49,7 +49,7 @@ def GetInputData():
 def DrawMainGraph(begin, end, figure, precision = 100):
 	plt.figure(figure)
 	
-	xList = np.linspace(begin, end, 100)
+	xList = np.linspace(begin, end, precision)
 	yList = [Function(x) for x in xList]
 	plt.plot(xList, yList, 'b-')
 	plt.plot((xList[0], xList[-1]), (0,0), 'k--')
@@ -110,7 +110,7 @@ def DrawTangentLine(x0, figure = -1):
 	return x1
 
 def MethodTangent(x0, error, figure = -1):
-	xCurrent = x0 #Чтобы не было ошибки, если цикл ни разу не запуститься
+	xCurrent = x0
 	yCurrent = Function(x0)
 	i = 0
 	
@@ -166,7 +166,7 @@ def GetCalcPrecision(error):
 
 def Main():
 	precision = 100
-	error = 0.01
+	error = 0.001
 	bounds = GetInputData()
 	print("Поиск корней на промежутке [{a}; {b}] ...".format(a=bounds[0], b=bounds[1]))
 	
@@ -177,24 +177,31 @@ def Main():
 	print("\nМетод Касательных (Ньютона)")
 	rootTan = MethodTangent(bounds[0] + 0.1, error, 1)
 	plt.plot(rootTan, Function(rootTan), 'or', label = "Метод касательных")
-	if (bounds[0] < rootTan and rootTan < bounds[1]):
+	if (bounds[0] <= rootTan and rootTan <= bounds[1]):
 		PrintResult(rootTan, error)
 	else:
-		print("Не получилось найти корни на введённом интервале.\n")
+		print("Не получилось найти корни на введённом интервале.")
 	
 	print("\nМетод Секущих:")
 	rootSec = MethodSecant(bounds[0] + 0.1, bounds[0] + 0.3, error, 1)
 	plt.plot(rootSec, Function(rootSec), 'og', label = "Метод секущих")
-	PrintResult(rootSec, error)
+	if (bounds[0] <= rootSec and rootSec <= bounds[1]):
+		PrintResult(rootSec, error)
+	else:
+		print("Не получилось найти корни на введённом интервале.")
 	
 	try:
 		print("\nМетод Биссекции:")
-		rootBis = MethodBisection(bounds[0], bounds[1], error)
+		rootBis = MethodBisection(bounds[0] + 0.1, bounds[1], error)
 		plt.plot(rootBis, Function(rootBis), 'vm', label = "Метод бисекции")
 		PrintResult(rootBis, error)
 	except RuntimeError:
 		print("Значения функции на концах отрезка одного знака. Биссекция невозможна.")
 
+	#BAD: Есть проблема в том, что нам даётся погрешность для значений y, а в
+	#методе грубой силы, погрешность для y используется для количества
+	#промежутков, то есть для погрешности x.  Надо везде использовать одинаковую
+	#погрешность
 	print("\nМетод Грубой силы:")
 	rootsBF = MethodBruteForce(bounds[0], bounds[1], error)
 	plt.plot(rootsBF, [Function(x) for x in rootsBF], '^c', label = "Метод грубой силы")
