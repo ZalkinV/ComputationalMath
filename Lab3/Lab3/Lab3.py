@@ -12,7 +12,7 @@ def Function(x):
 	#return 3**x + x
 	#return x**2 + 4 * np.sin(x)
 	#return x * np.log(x**2 - 1) - 1
-	return np.exp(-x**2) * np.cos(4*x)
+	return np.exp(-x ** 2) * np.cos(4 * x)
 
 def Derivative(x):
 	#return -np.sin(x) - 6
@@ -22,7 +22,7 @@ def Derivative(x):
 	#
 	#
 	#
-	return (np.exp(-x**2) * -2 * x) * (-np.sin(4 * x) * 4)
+	return (np.exp(-x ** 2) * -2 * x * np.cos(4 * x)) + (np.exp(-x ** 2) * -np.sin(4 * x) * 4)
 
 def ApproxDerivative(x0, x1):
 	return (Function(x1) - Function(x0)) / (x1 - x0)
@@ -138,12 +138,11 @@ def MethodBisection(a, b, error):
 def MethodBruteForce(a, b, error):
 	n = int((b - a) / error)
 	xList = np.linspace(a, b, n + 1)
-	yList = Function(xList)
 	roots = []
 
 	for i in range(n - 1):
-		if (yList[i] * yList[i + 1] < 0):
-			roots.append(xList[i] - ApproxDerivative(xList[i], xList[i + 1]) * yList[i])
+		if (Function(xList[i]) * Function(xList[i + 1]) < 0):
+			roots.append(xList[i] - ApproxDerivative(xList[i], xList[i + 1]) * Function(xList[i]))
 
 	return roots
 
