@@ -29,7 +29,7 @@ def ApproxDerivative(x0, x1):
 
 def GetInputData():
 	while True:
-		bounds = input("Введите начало промежутка и конец промежутка через пробел: ").split(' ')
+		bounds = input("Введите через пробел начало и конец промежутка: ").split(' ')
 		if (len(bounds) == 2):
 			try:
 				begin = float(bounds[0])
@@ -44,7 +44,20 @@ def GetInputData():
 			print("Промежуток должен быть задан двумя действительными числами!\n")
 			continue
 		break
-	return (begin, end)
+
+	while True:
+		errorString = input("Введите желаемую точность вычислений в виде десятичной дроби: ")
+		if (len(errorString) != 0):
+			try:
+				error = float(errorString)
+			except (ValueError):
+				print("Нужно вводить десятичные дроби! Попробуйте ещё раз.\n")
+				continue
+		else:
+			error = 0.01
+		break
+
+	return (begin, end, error)
 
 def DrawMainGraph(begin, end, figure, precision = 100):
 	plt.figure(figure)
@@ -166,16 +179,21 @@ def GetCalcPrecision(error):
 
 def Main():
 	precision = 100
-	error = 0.001
-	bounds = GetInputData()
-	print("Поиск корней на промежутке [{a}; {b}] ...".format(a=bounds[0], b=bounds[1]))
+
+	data = GetInputData()
+	bounds = data[0:2]
+	error = data[2]
+	print("Поиск корней на промежутке [{a}; {b}] с точностью {e} ...".format(a=bounds[0], b=bounds[1], e=error))
 	
 	DrawMainGraph(bounds[0], bounds[1], 1, precision)
 	
 	print("\nРезультаты вычислений:")
+	#BAD: Ниже две очень плохие строки, которые нужно будет заменить
+	offsetA = abs(bounds[0] / 10) 
+	offsetB = offsetA * 2 + 0.1
 
 	print("\nМетод Касательных (Ньютона)")
-	rootTan = MethodTangent(bounds[0] + 0.1, error, 1)
+	rootTan = MethodTangent(bounds[0] + offsetA, error, 1)
 	plt.plot(rootTan, Function(rootTan), 'or', label = "Метод касательных")
 	if (bounds[0] <= rootTan and rootTan <= bounds[1]):
 		PrintResult(rootTan, error)
@@ -183,7 +201,7 @@ def Main():
 		print("Не получилось найти корни на введённом интервале.")
 	
 	print("\nМетод Секущих:")
-	rootSec = MethodSecant(bounds[0] + 0.1, bounds[0] + 0.3, error, 1)
+	rootSec = MethodSecant(bounds[0] + offsetA, bounds[0] + offsetB, error, 1)
 	plt.plot(rootSec, Function(rootSec), 'og', label = "Метод секущих")
 	if (bounds[0] <= rootSec and rootSec <= bounds[1]):
 		PrintResult(rootSec, error)
@@ -192,7 +210,7 @@ def Main():
 	
 	try:
 		print("\nМетод Биссекции:")
-		rootBis = MethodBisection(bounds[0] + 0.1, bounds[1], error)
+		rootBis = MethodBisection(bounds[0], bounds[1], error)
 		plt.plot(rootBis, Function(rootBis), 'vm', label = "Метод бисекции")
 		PrintResult(rootBis, error)
 	except RuntimeError:
