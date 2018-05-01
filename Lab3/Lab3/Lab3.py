@@ -6,22 +6,16 @@ maxMethodIterations = 15
 
 def Function(x):
 	return np.cos(x) - 6 * x + 1
-	#return 2 * np.log(x + 1) - 1/x
 	#return (x - 1) ** 3 + 0.5 * np.e ** x
-	#return np.sqrt(x) - 1/(x + 1)**2
 	#return 3**x + x
 	#return x**2 + 4 * np.sin(x)
-	#return x * np.log(x**2 - 1) - 1
 	#return np.exp(-x ** 2) * np.cos(4 * x)
 
 def Derivative(x):
 	return -np.sin(x) - 6
-	#
 	#return 3 * (x - 1) ** 2 + 0.5 * np.e ** x
-	#
-	#
-	#
-	#
+	#return 3**x * np.log(3) + 1
+	#return 2 * x + 4 * np.cos(x)
 	#return (np.exp(-x ** 2) * -2 * x * np.cos(4 * x)) + (np.exp(-x ** 2) * -np.sin(4 * x) * 4)
 
 def ApproxDerivative(x0, x1):
@@ -72,7 +66,7 @@ def DrawMainGraph(begin, end, figure, precision = 100):
 	plt.title("f(x) = cos(x) - 6*x + 1", fontsize=14)
 	plt.grid(True)
 
-	plt.axis((xList[0], xList[-1], min(yList), max(yList)))
+	plt.axis([min(xList), max(xList), min(yList), max(yList)])
 	pass
 
 def DrawSecantLine(x0, x1, figure = -1):
@@ -209,12 +203,12 @@ def Main():
 		print("Не получилось найти корни на введённом интервале.")
 	
 	try:
-		print("\nМетод Биссекции:")
+		print("\nМетод Бисекции:")
 		rootBis = MethodBisection(bounds[0], bounds[1], error)
 		plt.plot(rootBis, Function(rootBis), 'vm', label = "Метод бисекции")
 		PrintResult(rootBis, error)
 	except RuntimeError:
-		print("Значения функции на концах отрезка одного знака. Биссекция невозможна.")
+		print("Значения функции на концах отрезка одного знака. Бисекция невозможна.")
 
 	#BAD: Есть проблема в том, что нам даётся погрешность для значений y, а в
 	#методе грубой силы, погрешность для y используется для количества
