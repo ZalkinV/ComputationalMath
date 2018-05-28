@@ -16,43 +16,42 @@ class DifferentialEquation:
 			self.__x.append(a + i * h)
 			i += 1
 
-		self.__func = lambda y, x: (2 - x**2 - y**2) / (2 + x**2 + x * y)
+		self.__func = lambda x, y: (2 - x ** 2 - y ** 2) / (2 + x ** 2 + x * y)
 
 	def EulersMethod(self):
 		y = [self.__y0]
 		i = 1
-		while self.__x[i-1] < self.__end:
-			y.append(y[-1] + self.__step * self.__func(y[-1], self.__x[i - 1]))
+		while self.__x[i - 1] < self.__end:
+			y.append(y[-1] + self.__step * self.__func(self.__x[i - 1], y[-1]))
 			i += 1
 		return y
 	
 	def SecondOrderMethod(self):
 		y = [self.__y0]
 		i = 1
-		while self.__x[i-1] < self.__end:
-			y.append(y[-1] + self.__step 
-					 * self.__func(y[-1] + self.__step / 2 * self.__func(y[-1], self.__x[i - 1]),
-								   self.__x[i-1] + self.__step / 2)) 
+		while self.__x[i - 1] < self.__end:
+			y.append(y[-1] + self.__step * self.__func(self.__x[i - 1] + self.__step / 2, 
+													   y[-1] + self.__step / 2 * self.__func(self.__x[i - 1], y[-1]))) 
 			i += 1
 		return y
 	
 	def RK4(self):
 		y = [self.__y0]
 		i = 1
-		while self.__x[i-1] < self.__end:
-			k1 = self.__step * self.__func(y[-1], self.__x[i - 1])
-			k2 = self.__step * self.__func(y[-1] + k1 / 2, 
-										   self.__x[i - 1] + self.__step / 2)
-			k3 = self.__step * self.__func(y[-1] + k2 / 2,
-										   self.__x[i - 1] + self.__step / 2)
-			k4 = self.__step * self.__func(y[-1] + k3,
-										   self.__x[i - 1] + self.__step)
-			y.append(y[-1] + (k1 + 2*k2 + 2*k3 + k4) / 6)
+		while self.__x[i - 1] < self.__end:
+			k1 = self.__step * self.__func(self.__x[i - 1], y[-1])
+			k2 = self.__step * self.__func(self.__x[i - 1] + self.__step / 2,
+										   y[-1] + k1 / 2)
+			k3 = self.__step * self.__func(self.__x[i - 1] + self.__step / 2,
+										   y[-1] + k2 / 2)
+			k4 = self.__step * self.__func(self.__x[i - 1] + self.__step,
+										   y[-1] + k3)
+			y.append(y[-1] + (k1 + 2 * k2 + 2 * k3 + k4) / 6)
 			i += 1
 		return y
 
 	def RealValue(self):
-		return odeint(self.__func, self.__y0, self.__x)
+		return odeint(self.__func, self.__x, self.__y0, tfirst=True)
 
 
 	def Graph(self):
