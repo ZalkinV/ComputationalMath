@@ -5,18 +5,18 @@ helpLineWidth = 0.9
 maxMethodIterations = 15
 
 def Function(x):
-	return np.cos(x) - 6 * x + 1
+	#return np.cos(x) - 6 * x + 1
 	#return (x - 1) ** 3 + 0.5 * np.e ** x
 	#return 3**x + x
 	#return x**2 + 4 * np.sin(x)
-	#return np.exp(-x ** 2) * np.cos(4 * x)
+	return np.exp(-x ** 2) * np.cos(4 * x)
 
 def Derivative(x):
-	return -np.sin(x) - 6
+	#return -np.sin(x) - 6
 	#return 3 * (x - 1) ** 2 + 0.5 * np.e ** x
 	#return 3**x * np.log(3) + 1
 	#return 2 * x + 4 * np.cos(x)
-	#return (np.exp(-x ** 2) * -2 * x * np.cos(4 * x)) + (np.exp(-x ** 2) * -np.sin(4 * x) * 4)
+	return (np.exp(-x ** 2) * -2 * x * np.cos(4 * x)) + (np.exp(-x ** 2) * -np.sin(4 * x) * 4)
 
 def ApproxDerivative(x0, x1):
 	return (Function(x1) - Function(x0)) / (x1 - x0)
