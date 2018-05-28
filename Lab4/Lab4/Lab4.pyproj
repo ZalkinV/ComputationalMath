@@ -2,9 +2,9 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>2701c88d-262b-4e91-b323-b698fa866cd5</ProjectGuid>
+    <ProjectGuid>3095bf06-e42c-4b4c-831b-74392b0ebfff</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Runge_Kutta_Methods.py</StartupFile>
+    <StartupFile>Lab4.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,7 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Runge_Kutta_Methods.py" />
+    <Compile Include="Lab4.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
